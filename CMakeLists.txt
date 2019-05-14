@@ -345,6 +345,13 @@ apply_folly_compile_options_to_target(folly_base)
 # Add the generated files to the correct source group.
 source_group("folly" FILES ${CMAKE_CURRENT_BINARY_DIR}/folly/folly-config.h)
 
+option(USE_HUNTER_BOOST "help string describing USE_HUNTER_BOOST" OFF)
+if (USE_HUNTER_BOOST)
+  hunter_add_package(Boost)
+  find_package(Boost CONFIG REQUIRED)
+  target_link_libraries(folly_deps INTERFACE Boost::boost)
+endif()
+
 # Generate pkg-config variables from folly_deps before we add our own
 # build/install-time include directory generator expressions
 include(GenPkgConfig)
@@ -414,6 +421,15 @@ install(
   DESTINATION ${INCLUDE_INSTALL_DIR}/folly
   COMPONENT dev
 )
+
+if (NOT USE_HUNTER_BOOST)
+  install(DIRECTORY boost DESTINATION include
+           PATTERN "spirit/*" EXCLUDE
+           PATTERN "fusion/*" EXCLUDE
+           PATTERN "phoenix/*" EXCLUDE
+           PATTERN "hana/*" EXCLUDE
+           )
+endif()
 
 # Generate the folly-config.cmake file for installation so that
 # downstream projects that use on folly can easily depend on it in their CMake
