@@ -117,6 +117,12 @@ include(FollyFunctions)
 
 include(folly-deps) # Find the required packages
 include(FollyConfigChecks)
+
+if (TVOS)
+  # TVos doesn't have memrchr, but the check fails to work / finds its
+  unset(FOLLY_HAVE_MEMRCHR CACHE)
+endif()
+
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/CMake/folly-config.h.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/folly/folly-config.h
