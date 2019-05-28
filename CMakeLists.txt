@@ -992,4 +992,6 @@ if (BUILD_TESTS)
   endif()
 endif()
 
-add_subdirectory(folly)
+if (NOT FOLLY_POD_CONFIGURATION)
+  add_subdirectory(folly)
+endif()
